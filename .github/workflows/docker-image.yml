@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the frontend Docker image
+      run: docker build ./frontend --file ./frontend/Dockerfile --tag laupse/spm-frontend:main-$(date +%s)
+    - name: Build the node backend Docker image
+      run: docker build ./backend --file ./backend/node/Dockerfile --tag laupse/spm-backend:main-$(date +%s)-node
+    - name: Build the dotnet backend Docker image
+      run: docker build ./backend --file ./backend/dotnet/Dockerfile --tag laupse/spm-backend:main-$(date +%s)-dotnet

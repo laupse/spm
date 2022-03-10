@@ -18,11 +18,11 @@ jobs:
           docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")
 
         - docker_context: backend/node
-          docker_image_name: laupse/spm-frontend
+          docker_image_name: laupse/spm-backend
           docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")-node
 
         - docker_context: backend/dotnet
-          docker_image_name: laupse/spm-frontend
+          docker_image_name: laupse/spm-backend
           docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")-dotnet
 
     steps:

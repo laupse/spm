@@ -13,8 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the frontend Docker image
-      run: docker build ./frontend --file ./frontend/Dockerfile --tag laupse/spm-frontend:main-$(date +%s)
+      run: docker build ./frontend --file ./frontend/Dockerfile --tag laupse/spm-frontend:main-$(git rev-parse --short "$GITHUB_SHA")
     - name: Build the node backend Docker image
-      run: docker build ./backend --file ./backend/node/Dockerfile --tag laupse/spm-backend:main-$(date +%s)-node
+      run: docker build ./backend --file ./backend/node/Dockerfile --tag laupse/spm-backend:main-$(git rev-parse --short "$GITHUB_SHA")-node
     - name: Build the dotnet backend Docker image
-      run: docker build ./backend --file ./backend/dotnet/Dockerfile --tag laupse/spm-backend:main-$(date +%s)-dotnet
+      run: docker build ./backend --file ./backend/dotnet/Dockerfile --tag laupse/spm-backend:main-$(git rev-parse --short "$GITHUB_SHA")-dotnet

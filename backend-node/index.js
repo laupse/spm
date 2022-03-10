@@ -29,10 +29,13 @@ app.get("/api/entreesdujour", cors({ origin: ["http://localhost:9000", "https://
 
   con.query(sql, [day], (err, rows) => {
     if (err) res.status(400).json({ error: err.message });
-    redis.set(day, JSON.stringify(rows));
     res.status(200).json(rows);  
     con.close();
   });
+});
+
+app.get("/health", (req, res, next) => {
+  res.status(200);  
 });
 
 // Server port

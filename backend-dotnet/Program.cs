@@ -42,10 +42,12 @@ app.MapGet("api/entreesdujour", () =>
         }
         catch (Exception ex)
         {
-            return Results.Json(new { error = ex.Message });
+            return Results.ServiceUnavailable(new { error = ex.Message });
         }
     }
 });
+
+app.MapGet("/health", () => {});
 
 app.UseCors();
 

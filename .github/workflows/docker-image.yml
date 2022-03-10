@@ -25,7 +25,9 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Retrieve short sha
-      run: echo "GITHUB_SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
+      run: |
+        echo "GITHUB_SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
+        echo "BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_ENV
     
     - name: Print env
       run: env | sort 
@@ -42,5 +44,5 @@ jobs:
         context: ${{ matrix.component }}/${{ matrix.language }}
         file: ${{ matrix.component }}/${{ matrix.language }}/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.GITHUB_REF_NAME }}-${{ env.GITHUB_SHORT_SHA }}${{ matrix.language }},|
-              ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.GITHUB_REF_NAME }}${{ matrix.language }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.BRANCH_NAME }}-${{ env.GITHUB_SHORT_SHA }}${{ matrix.language }},|
+              ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.BRANCH_NAME }}${{ matrix.language }}

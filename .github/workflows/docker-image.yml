@@ -4,7 +4,7 @@ on:
   push:
     branches: 
     - main
-    - releases/**
+    - v**
 
 jobs:
 
@@ -14,21 +14,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        component: [backend]
+        language: [node, dotnet]
         include:
-        - docker_context: frontend
-          docker_image_name: spm-frontend
-          docker_image_tag: main-${{ env.GITHUB_SHORT_SHA }}
+        - component: frontend
+          language: 
 
-        - docker_context: backend/node
-          docker_image_name: spm-backend
-          docker_image_tag: main-${{ env.GITHUB_SHORT_SHA }}-node
-
-        - docker_context: backend/dotnet
-          docker_image_name: spm-backend
-          docker_image_tag: main-${{ env.GITHUB_SHORT_SHA }}-dotnet
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Print env
+      run: env | sort 
     
     - name: Retrieve short sha
       run: export GITHUB_SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")
@@ -42,7 +39,7 @@ jobs:
     - name: Build the ${{ matrix.docker_context }} Docker image
       uses: docker/build-push-action@v2
       with: 
-        context: ${{ matrix.docker_context }}
-        file: ${{ matrix.docker_context }}/Dockerfile
+        context: ${{ matrix.component }}/${{ matrix.language }}
+        file: ${{ matrix.component }}/${{ matrix.language }}/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.docker_image_name }}:${{ matrix.docker_image_tag }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.GITHUB_BRANCH }}-${{ env.GITHUB_SHORT_SHA }}-${{ matrix.language }}

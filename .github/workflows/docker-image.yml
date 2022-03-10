@@ -28,7 +28,7 @@ jobs:
       run: env | sort 
     
     - name: Retrieve short sha
-      run: echo GITHUB_SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA") | tee -a ${{ env.GITHUB_ENV }}
+      run: echo "{GITHUB_SHORT_SHA}={$(git rev-parse --short "$GITHUB_SHA")}" >> $GITHUB_ENV
     
     - name: Print env
       run: env | sort 

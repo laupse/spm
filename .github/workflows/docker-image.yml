@@ -32,7 +32,6 @@ jobs:
     
     - name: Print env
       run: env | sort 
-    
 
     - name: Login to Docker Hub
       uses: docker/login-action@v1
@@ -46,4 +45,4 @@ jobs:
         context: ${{ matrix.component }}/${{ matrix.language }}
         file: ${{ matrix.component }}/${{ matrix.language }}/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.${{ matrix.language }} }}-${{ env.GITHUB_SHORT_SHA }}-${{ matrix.language }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.GITHUB_REF }}-${{ env.GITHUB_SHORT_SHA }}-${{ matrix.language }}

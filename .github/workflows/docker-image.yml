@@ -9,12 +9,27 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - docker_context: frontend
+          docker_image_name: laupse/spm-frontend
+          docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")
+
+        - docker_context: backend/node
+          docker_image_name: laupse/spm-frontend
+          docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")-node
+
+        - docker_context: backend/dotnet
+          docker_image_name: laupse/spm-frontend
+          docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")-dotnet
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the frontend Docker image
-      run: docker build ./frontend --file ./frontend/Dockerfile --tag laupse/spm-frontend:main-$(git rev-parse --short "$GITHUB_SHA")
-    - name: Build the node backend Docker image
-      run: docker build ./backend/node --file ./backend/node/Dockerfile --tag laupse/spm-backend:main-$(git rev-parse --short "$GITHUB_SHA")-node
-    - name: Build the dotnet backend Docker image
-      run: docker build ./backend/dotnet --file ./backend/dotnet/Dockerfile --tag laupse/spm-backend:main-$(git rev-parse --short "$GITHUB_SHA")-dotnet
+    - name: Build the ${{ matrix.docker_context }} Docker image
+      run: docker build ${{ matrix.docker_context }} --file ${{ matrix.docker_context }}/Dockerfile --tag ${{ matrix.docker_image_tag }}:${{ matrix.docker_image_tag }}
+    - name: Docker login Docker Hub 
+      run: echo  ${{ secrets.DOCKERHUB_ACCESS_TOKEN }} | docekr login -u laupse
+    - name: Push the ${{ matrix.docker_context }} Docker image
+      run: docker push ${{ matrix.docker_image_tag }}:${{ matrix.docker_image_tag }}

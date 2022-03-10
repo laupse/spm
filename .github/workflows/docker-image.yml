@@ -16,15 +16,15 @@ jobs:
       matrix:
         include:
         - docker_context: frontend
-          docker_image_name: ${{ secrets.DOCKERHUB_USERNAME }}/spm-frontend
+          docker_image_name: spm-frontend
           docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")
 
         - docker_context: backend/node
-          docker_image_name: ${{ secrets.DOCKERHUB_USERNAME }}/spm-backend
+          docker_image_name: spm-backend
           docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")-node
 
         - docker_context: backend/dotnet
-          docker_image_name: ${{ secrets.DOCKERHUB_USERNAME }}/spm-backend
+          docker_image_name: spm-backend
           docker_image_tag: main-$(git rev-parse --short "$GITHUB_SHA")-dotnet
 
     steps:
@@ -42,4 +42,4 @@ jobs:
         context: ${{ matrix.docker_context }}
         file: ${{ matrix.docker_context }}/Dockerfile
         push: true
-        tags: ${{ matrix.docker_image_name }}:${{ matrix.docker_image_tag }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.docker_image_name }}:${{ matrix.docker_image_tag }}

@@ -30,6 +30,6 @@ jobs:
     - name: Build the ${{ matrix.docker_context }} Docker image
       run: docker build ${{ matrix.docker_context }} --file ${{ matrix.docker_context }}/Dockerfile --tag ${{ matrix.docker_image_tag }}:${{ matrix.docker_image_tag }}
     - name: Docker login Docker Hub 
-      run: echo  ${{ secrets.DOCKERHUB_ACCESS_TOKEN }} | docekr login -u laupse
+      run: echo  ${{ secrets.DOCKERHUB_ACCESS_TOKEN }} | docker login -u laupse --password-stdin
     - name: Push the ${{ matrix.docker_context }} Docker image
       run: docker push ${{ matrix.docker_image_tag }}:${{ matrix.docker_image_tag }}

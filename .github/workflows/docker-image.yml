@@ -44,5 +44,6 @@ jobs:
         context: ${{ matrix.component }}/${{ matrix.language }}
         file: ${{ matrix.component }}/${{ matrix.language }}/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.BRANCH_NAME }}-${{ env.GITHUB_SHORT_SHA }}${{ matrix.language }},|
-              ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.BRANCH_NAME }}${{ matrix.language }}
+        tags: 
+        - ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.BRANCH_NAME }}-${{ env.GITHUB_SHORT_SHA }}${{ matrix.language }},
+        - ${{ secrets.DOCKERHUB_USERNAME }}/spm-${{ matrix.component }}:${{ env.BRANCH_NAME }}${{ matrix.language }}

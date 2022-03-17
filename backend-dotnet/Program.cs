@@ -42,12 +42,12 @@ app.MapGet("api/entreesdujour", () =>
         }
         catch (Exception ex)
         {
-            return Results.ServiceUnavailable(new { error = ex.Message });
+            return Results.Problem(JsonConvert.SerializeObject(new { error = ex.Message }), statusCode: 503);
         }
     }
 });
 
-app.MapGet("/health", () => {});
+app.MapGet("/health", () => Results.Ok());
 
 app.UseCors();
 

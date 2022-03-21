@@ -11,15 +11,17 @@ const db_config = {
   database: process.env.DB_DATABASE || "pouletmayo",
 }
 
-const redis_client = redis.createClient({
-  url: process.env.REDIS_URL || "redis://localhost:6379"
-});
+const redis_url = process.env.REDIS_URL || "redis://localhost:6379"
 
 const app = express();
 
 app.get("/api/entreesdujour", cors({ origin: ["http://localhost:9000", "https://www.sandwichpouletmayonnaise.com"] }), async (req, res, next) => {
   const d = new Date();
   let day = d.getDay();
+
+  const redis_client = redis.createClient({
+    url: redis_url
+  });
 
   try {
     await redis_client.connect();

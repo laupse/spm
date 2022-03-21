@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const mysql = require("mysql2");
+// const mysql = require("mysql2");
+const mysql = require('mysql2/promise');
+const redis = require("redis");
 
 const db_config = {
   host: process.env.DB_HOST || "localhost",
@@ -9,29 +11,48 @@ const db_config = {
   database: process.env.DB_DATABASE || "pouletmayo",
 }
 
+const redis_client = redis.createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379"
+});
+
 const app = express();
 
-app.get("/api/entreesdujour", cors({ origin: ["http://localhost:9000", "https://www.sandwichpouletmayonnaise.com"] }), (req, res, next) => {
-  var con = mysql.createConnection(db_config);
-  con.connect((error) => {
-    if (error) {
-      // Cannot open database
-      res.status(400).json({ error: error.message });
-    } else {
-      console.log("Connected to the mysql database.");
-    }
-  });
-
+app.get("/api/entreesdujour", cors({ origin: ["http://localhost:9000", "https://www.sandwichpouletmayonnaise.com"] }), async (req, res, next) => {
   const d = new Date();
   let day = d.getDay();
 
-  const sql = "SELECT * FROM Entrees WHERE jour = ?";
+  try {
+    await redis_client.connect();
 
-  con.query(sql, [day], (err, rows) => {
-    if (err) res.status(400).json({ error: err.message });
-    res.status(200).json(rows);  
-    con.close();
-  });
+    const value = await redis_client.get(day);
+    if(value) {
+      redis_client.disconnect();
+      return res.status(200).json(JSON.parse(value));
+    }
+  } catch (error) {
+    console.log(error)
+  }
+
+  try {
+    const con = await mysql.createConnection(db_config);
+    const sql = "SELECT * FROM Entrees WHERE jour = ?";
+    const [rows, fields] = await con.execute(sql, [day])
+
+    res.status(200).json(rows); 
+    try {
+      await redis_client.set(day, JSON.stringify(rows));
+      redis_client.disconnect()
+    } catch (error) {
+      console.log(error)
+    }
+    con.close(); 
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: error.message });
+  }
+  
+  
 });
 
 app.get("/health", (req, res, next) => {

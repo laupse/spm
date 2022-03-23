@@ -56,7 +56,7 @@ app.get("/api/entreesdujour", cors({ origin: ["http://localhost:9000", "https://
 });
 
 app.get("/health", (req, res, next) => {
-  res.status(200);  
+  res.status(200).send("ok");  
 });
 
 // Server port

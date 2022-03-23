@@ -16,7 +16,6 @@
     "@opentelemetry/sdk-node": "^0.27.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "ioredis": "^4.28.5",
     "mysql2": "^2.3.3",
     "path": "^0.12.7",
     "redis": "^4.0.4"

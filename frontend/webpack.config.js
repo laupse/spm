@@ -2,13 +2,17 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/app/poulet-mayonnaise.js",
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "bundle.js",
   },
-  plugins: [new HtmlWebpackPlugin({ template: "./src/index.html" })],
+  plugins: [new HtmlWebpackPlugin({
+    template: "./src/index.html",
+    scriptLoading: "blocking"
+  })
+  ],
   module: {
     rules: [
       {

@@ -1,9 +1,10 @@
-FROM node:17-alpine
+FROM node:17-alpine as build
 
-WORKDIR /app
-COPY ./ ./
-RUN npm install && chown -R node /app
+WORKDIR /src
+COPY . .
+RUN chown -R node /src && npm install && npm run build
 
-USER node 
+FROM caddy
 
-CMD ["npm", "start"]
+COPY --from=build /src/dist/* /usr/share/caddy/
+COPY Caddyfile /etc/caddy
